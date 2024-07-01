@@ -69,7 +69,7 @@ This section will cover some hot tips when trying to interacting with this repos
 git clone https://github.com/mihaiandreineacsu/baby-tools-shop.git
 
 # Create docker volume for database:
-docker create volume <database_volume_name>
+docker volume create <database_volume_name>
 
 # Build Docker Image for Development
 docker build -t <image_name>:<image_tag> .
