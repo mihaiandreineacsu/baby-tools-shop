@@ -68,6 +68,9 @@ This section will cover some hot tips when trying to interacting with this repos
 # Clone repository:
 git clone https://github.com/mihaiandreineacsu/baby-tools-shop.git
 
+# Navigate to repository folder:
+cd baby-tools-shop
+
 # Create docker volume for database:
 docker volume create <database_volume_name>
 
