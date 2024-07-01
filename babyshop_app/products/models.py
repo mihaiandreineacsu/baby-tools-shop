@@ -7,6 +7,8 @@ from enum import unique
 from pyexpat import model
 from unicodedata import name
 from django.db import models
+from django.dispatch import receiver
+from django.db.models.signals import post_delete
 
 class Category(models.Model):
     name=models.CharField(max_length=50,null=True)
@@ -35,3 +37,14 @@ class Product(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+
+# Receiver function to delete file when the instance is deleted
+@receiver(post_delete, sender=Product)
+def delete_video_file(sender, instance, **kwargs):
+
+    if instance.image:
+        image_path = instance.image.path
+
+        if os.path.isfile(instance.image.path):
+            os.remove(instance.image.path)
