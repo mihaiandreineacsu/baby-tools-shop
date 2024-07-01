@@ -62,61 +62,14 @@ This section will cover some hot tips when trying to interacting with this repos
 
 ## Quickstart
 
-### Build Docker Image
-
-```powershell
-# Clone repository:
-git clone https://github.com/mihaiandreineacsu/baby-tools-shop.git
-
-# Navigate to repository folder:
-cd baby-tools-shop
-
-# Create docker volume for database:
-docker volume create <database_volume_name>
-
-# Build Docker Image for Development
-docker build -t <image_name>:<image_tag> .
-# This will instruct:
-# - the ENTRYPOINT to start Django development server
-# - to sets Django DEBUG to True.
-
-# Build Docker Image for Production
-docker build --build-arg DEV=False -t <image_name>:<image_tag> .
-# This will instruct:
-# - to sets Django DEBUG to False.
-# - to install gunicorn
-# - the ENTRYPOINT to collect statics and start Django using gunicorn
-```
-
----
-
-### Start the application
-
-```powershell
-# For development build, run:
-docker run -it --name <container_name> --rm -p 8000:8000 -v ${PWD}/babyshop_app:/app -v <database_volume_name>:/database -v ${PWD}/vol:/vol <image_name>:<image_tag>
-
-# For production build, run:
-docker run --name <container_name> --rm --restart on-failure -p 8025:8000 -v <database_volume_name>:/database -v /vol:/vol <image_name>:<image_tag>
-
-```
-
-Let's break down the commands:
-
-- "docker run -it --name <container_name> --rm  --restart on-failure" : Create and run a new container from an image, give it a name and remove the container when stopped.
-- "-p 8025:8000" : Publish a container's port(s) to the host
-- "-v ${PWD}/babyshop_app:/app" : Bind mount application source code (useful in development)
-- "-v <database_volume_name>:/database": Bind mount database volume to docker's container location "/database" (See  [Django DATABASES Settings](./babyshop_app/babyshop/settings.py))
-- "-v ${PWD}/vol:/vol" : Bind mount the statics and media location (useful in development)
-- "-v /vol:/vol" : Bind mount the statics and media location (in production, required to serve the files via webserver)
-
-For development build, if you now navigate to [127.0.0.1:8000](http://127.0.0.1:8000) you should be able to open the application in your Browser.
-
----
-
 ### Nginx configuration (production)
 
 ```bash
+# Create folders for static and media files with the correct permissions
+sudo mkdir -p /vol/web/static /vol/web/media
+sudo chown -R 1000:1000 /vol/web
+sudo chmod -R 755 /vol/web
+
 # Create nginx configuration file:
 sudo touch /etc/nginx/sites-enabled/babyshop
 ```
@@ -152,6 +105,66 @@ sudo nginx -t
 # Restart nginx service:
 sudo systemctl restart nginx
 ```
+
+---
+
+### Build Docker Image
+
+```powershell
+# Clone repository:
+git clone https://github.com/mihaiandreineacsu/baby-tools-shop.git
+
+# Navigate to repository folder:
+cd baby-tools-shop
+
+# Create environments file:
+sudo touch .env
+
+# Open the file, set the environments, save and close the file:
+DJANGO_ALLOWED_HOSTS=your_public_ip_here:8025
+
+# Create docker volume for database:
+docker volume create <database_volume_name>
+
+# Build Docker Image for Development
+docker build -t <image_name>:<image_tag> .
+# This will instruct:
+# - the ENTRYPOINT to start Django development server
+# - to sets Django DEBUG to True.
+
+# Build Docker Image for Production
+docker build --build-arg DEV=False -t <image_name>:<image_tag> .
+# This will instruct:
+# - to sets Django DEBUG to False.
+# - to install gunicorn
+# - the ENTRYPOINT to collect statics and start Django using gunicorn
+```
+
+---
+
+### Start the application
+
+```powershell
+# For development build, run:
+docker run -it --name <container_name> --rm -p 8000:8000 -v ${PWD}/babyshop_app:/app -v <database_volume_name>:/database -v ${PWD}/vol:/vol <image_name>:<image_tag>
+
+# For production build, run:
+docker run -d --name <container_name> --restart on-failure -p 8000:8000 -v <database_volume_name>:/database -v /vol:/vol --env-file .env <image_name>:<image_tag>
+
+```
+
+Let's break down the commands:
+
+- "docker run -it --name <container_name> --rm <image_name>:<image_tag>" : Create and run an interactive new container from an image, give it a name and remove the container when stopped.
+- "docker run -d --name <container_name> --restart on-failure <image_name>:<image_tag>" : Create and run a detached new container from an image, give it a name and restart the container on error.
+- "-p 8000:8000" : Publish a container's port(s) to the host
+- "-v ${PWD}/babyshop_app:/app" : Bind mount application source code (useful in development)
+- "-v <database_volume_name>:/database": Bind mount database volume to docker's container location "/database" (See  [Django DATABASES Settings](./babyshop_app/babyshop/settings.py))
+- "-v ${PWD}/vol:/vol" : Bind mount the statics and media location (useful in development)
+- "-v /vol:/vol" : Bind mount the statics and media location (in production, required to serve the files via webserver)
+- "--env-file .env" : Read in a file of environment variables
+
+For development build, if you now navigate to [127.0.0.1:8000](http://127.0.0.1:8000) you should be able to open the application in your Browser.
 
 ---
 
