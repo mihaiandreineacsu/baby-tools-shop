@@ -121,7 +121,8 @@ cd baby-tools-shop
 sudo touch .env
 
 # Open the file, set the environments, save and close the file:
-DJANGO_ALLOWED_HOSTS=your_public_ip_here:8025
+DJANGO_ALLOWED_HOSTS=your_public_ip_here
+DJANGO_CSRF_TRUSTED_ORIGINS=your_csrf_trusted_origins
 
 # Create docker volume for database:
 docker volume create <database_volume_name>
