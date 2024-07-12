@@ -128,13 +128,17 @@ DJANGO_CSRF_TRUSTED_ORIGINS=your_csrf_trusted_origins
 docker volume create <database_volume_name>
 
 # Build Docker Image for Development
-docker build -t <image_name>:<image_tag> .
+docker build \
+    -t <image_name>:<image_tag> . # -t babyshop:dev
 # This will instruct:
 # - the ENTRYPOINT to start Django development server
 # - to sets Django DEBUG to True.
 
 # Build Docker Image for Production
-docker build --build-arg DEV=False -t <image_name>:<image_tag> .
+docker build \
+    --build-arg DEV=False \ # --build-args DEV=True | False
+    -t <image_name>:<image_tag> . \ # -t babyshop:prod
+
 # This will instruct:
 # - to sets Django DEBUG to False.
 # - to install gunicorn
@@ -147,23 +151,25 @@ docker build --build-arg DEV=False -t <image_name>:<image_tag> .
 
 ```powershell
 # For development build, run:
-docker run -it --name <container_name> --rm -p 8000:8000 -v ${PWD}/babyshop_app:/app -v <database_volume_name>:/database -v ${PWD}/vol:/vol <image_name>:<image_tag>
+docker run -it --rm \ # Create and run an interactive new container and remove the container when stopped
+    --name <container_name> \ # Names the container: --name babyshop_dev
+    -p 8000:8000 \ # Publish a container's port to the host.
+    -v ${PWD}/babyshop_app:/app \ # Bind mount application source code (useful in development)
+    -v <database_volume_name>:/database \ # -v babyshop_db:/database
+    -v ${PWD}/vol:/vol \ # Bind mount the statics and media location (useful in development)
+    <image_name>:<image_tag> # babyshop:dev
 
 # For production build, run:
-docker run -d --name <container_name> --restart on-failure -p 8000:8000 -v <database_volume_name>:/database -v /vol:/vol --env-file .env <image_name>:<image_tag>
+docker run -d \ # Create and run a detached new container
+    --restart on-failure \ # Restarts the container only if it exits with a non-zero exit status
+    --name <container_name> \ # Names the container: --name babyshop_prod
+    -p 8000:8000 \ # In production this should match nginx configuration
+    -v <database_volume_name>:/database \ # -v babyshop_db:/database
+    -v /vol:/vol \ # In production this should match nginx configuration
+    --env-file .env \ # Specify the file that contains the environment variables.
+    <image_name>:<image_tag> # babyshop:prod
 
 ```
-
-Let's break down the commands:
-
-- "docker run -it --name <container_name> --rm <image_name>:<image_tag>" : Create and run an interactive new container from an image, give it a name and remove the container when stopped.
-- "docker run -d --name <container_name> --restart on-failure <image_name>:<image_tag>" : Create and run a detached new container from an image, give it a name and restart the container on error.
-- "-p 8000:8000" : Publish a container's port(s) to the host
-- "-v ${PWD}/babyshop_app:/app" : Bind mount application source code (useful in development)
-- "-v <database_volume_name>:/database": Bind mount database volume to docker's container location "/database" (See  [Django DATABASES Settings](./babyshop_app/babyshop/settings.py))
-- "-v ${PWD}/vol:/vol" : Bind mount the statics and media location (useful in development)
-- "-v /vol:/vol" : Bind mount the statics and media location (in production, required to serve the files via webserver)
-- "--env-file .env" : Read in a file of environment variables
 
 For development build, if you now navigate to [127.0.0.1:8000](http://127.0.0.1:8000) you should be able to open the application in your Browser.
 
@@ -173,7 +179,8 @@ For development build, if you now navigate to [127.0.0.1:8000](http://127.0.0.1:
 
 ```powershell
 # Execute this command:
-docker exec -it <container_name> /py/bin/python /app/manage.py createsuperuser
+docker exec -it <container_name> \ # docker exec -it babyshop_dev | babyshop_prod
+    /py/bin/python /app/manage.py createsuperuser # Django command to start creating an admin user
 
 # Then follow the prompts to create an admin user.
 Username: <admin_username>
@@ -183,4 +190,4 @@ Password (again): <admin_password>
 Superuser created successfully.
 ```
 
-After creating admin user, open your application in your Browser and navigate to `/admin`. Here you can login to Django Admin panel using the provided username and password.
+After creating admin user, open your application in your Browser and navigate to [127.0.0.1:8000/admin](http://127.0.0.1:8000/admin). Here you can login to Django Admin panel using the provided username and password.
