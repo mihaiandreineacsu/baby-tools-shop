@@ -4,8 +4,8 @@
 
 1. [TECHNOLOGIES](#technologies)
 1. [Hints](#hints)
-1. [Photos](#photos)
 1. [Quickstart](#quickstart)
+1. [Photos](#photos)
 
 ## TECHNOLOGIES
 
@@ -33,32 +33,6 @@ This section will cover some hot tips when trying to interacting with this repos
 - Requirements can be found in [requirements.txt](./requirements.txt) file
 
 - The commands examples in [Quickstart](#quickstart) for the host machine in development are in powershell
-
-## Photos
-
-### Home Page with login
-
-<img alt="" src="./project_images/capture_20220323080815407.jpg"></img>
-
-### Home Page with filter
-
-<img alt="" src="./project_images/capture_20220323080840305.jpg"></img>
-
-#### Product Detail Page
-
-<img alt="" src="./project_images/capture_20220323080934541.jpg"></img>
-
-#### Home Page with no login
-
-<img alt="" src="./project_images/capture_20220323080953570.jpg"></img>
-
-#### Register Page
-
-<img alt="" src="./project_images/capture_20220323081016022.jpg"></img>
-
-#### Login Page
-
-<img alt="" src="./project_images/capture_20220323081044867.jpg"></img>
 
 ## Quickstart
 
@@ -191,3 +165,29 @@ Superuser created successfully.
 ```
 
 After creating admin user, open your application in your Browser and navigate to [127.0.0.1:8000/admin](http://127.0.0.1:8000/admin). Here you can login to Django Admin panel using the provided username and password.
+
+## Photos
+
+### Home Page with login
+
+<img alt="" src="./project_images/capture_20220323080815407.jpg"></img>
+
+### Home Page with filter
+
+<img alt="" src="./project_images/capture_20220323080840305.jpg"></img>
+
+#### Product Detail Page
+
+<img alt="" src="./project_images/capture_20220323080934541.jpg"></img>
+
+#### Home Page with no login
+
+<img alt="" src="./project_images/capture_20220323080953570.jpg"></img>
+
+#### Register Page
+
+<img alt="" src="./project_images/capture_20220323081016022.jpg"></img>
+
+#### Login Page
+
+<img alt="" src="./project_images/capture_20220323081044867.jpg"></img>
