@@ -12,6 +12,7 @@ ENV PYTHONUNBUFFERED=1 \
 WORKDIR /app
 
 # Install system dependencies first to leverage Docker cache
+# Required for Pillow to compile
 RUN apk add --no-cache \
     bash \
     jpeg-dev \
