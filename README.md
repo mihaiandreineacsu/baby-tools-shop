@@ -191,3 +191,5 @@ After creating admin user, open your application in your Browser and navigate to
 #### Login Page
 
 <img alt="" src="./project_images/capture_20220323081044867.jpg"></img>
+
+Demo example for Ishak
