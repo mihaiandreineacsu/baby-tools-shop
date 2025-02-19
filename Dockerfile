@@ -1,8 +1,8 @@
 FROM python:3.9-slim
 
-WORKDIR /app
+WORKDIR /babyshop_app
 
-COPY ./babyshop_app $WORKDIR
+COPY ./babyshop_app ./
 
 RUN python -m pip install -r requirements.txt
 

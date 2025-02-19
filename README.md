@@ -11,9 +11,7 @@
 
 - Python 3.9
 - Django 4.0.2
-- Gunicorn (production)
 - Docker
-- Nginx
 
 ## Hints
 
@@ -37,13 +35,14 @@ docker build \
 docker run -it --rm \ # # Create and run an interactive new container and remove the container when stopped
     --name babyshop_simple \ # -- name <container_name>
     -p 8025:8025 \ # Publish a container's port to the host.
+    --env-file .env
     -v ${PWD}/babyshop_app:/app \ # Bind mount application source code
     babyshop:simple # <image_name>:<image_tag>
 ```
 
 If you now navigate to [127.0.0.1:8025](http:127.0.0.1:8025) you should be able to open the application in your Browser.
 
-- [Dockerfile](./Dockerfile) exposes the application on port 8000 and accepts a build argument DEV that can be set to "True" or "False". Default is "True"
+- [Dockerfile](./Dockerfile) exposes the application on port 8025, creates and runs django migrations and starts django server on 0.0.0.0:8025
 
 #### Home Page with login
 
